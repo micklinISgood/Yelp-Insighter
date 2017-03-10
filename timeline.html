@@ -39,7 +39,7 @@ form {
 var n = 4, // number of layers
     m = 58, // number of samples per layer
     stack = d3.layout.stack(),
-    layers = stack(d3.range(n).map(function() { return bumpLayer(m, .1); })),
+    layers = stack(d3.range(n).map(function(i) { return bumpLayer(m, i, .1); })),
     yGroupMax = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y; }); }),
     yStackMax = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y0 + d.y; }); });
 
@@ -134,7 +134,7 @@ function transitionStacked() {
 }
 
 // Inspired by Lee Byron's test data generator.
-function bumpLayer(n, o) {
+function bumpLayer(n, x, o) {
 
   function bump(a) {
     var x = 1 / (.1 + Math.random()),
@@ -146,9 +146,24 @@ function bumpLayer(n, o) {
     }
   }
 
+
   var a = [], i;
-  for (i = 0; i < n; ++i) a[i] = o + o * Math.random();
-  for (i = 0; i < 5; ++i) bump(a);
+  /*
+  The data must be equal-length, line 39, 40 to modify the dimensions.
+  */
+  if(x==0){
+    a = [1,23,4,5,3,4,5,1,11];
+  }else if(x==1){
+    a = [1,23,4,5,3,4,5,1,15];
+
+  }if(x==2){
+    a = [1,23,4,5,3,4,5,1,2];
+
+  }else{
+    a = [1,23,4,5,3,4,5,1,10];
+  }
+  // for (i = 0; i < n; ++i) a[i] = o + o * Math.random();
+  // for (i = 0; i < 5; ++i) bump(a);
   return a.map(function(d, i) { return {x: i, y: Math.max(0, d)}; });
 }
 
